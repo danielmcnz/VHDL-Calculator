@@ -55,17 +55,17 @@ begin
 
 Invert_0: Twos_Complement port map(Input => Register_0, Output => reg_0_invert);
 Invert_2: Twos_Complement port map(Input => Register_2, Output => reg_2_invert);
-Invert_temp_output: Twos_Complement port map(Input => Register_0, Output => temp_output_invert);
+Invert_temp_output: Twos_Complement port map(Input => temp_output, Output => temp_output_invert);
 
 process (Calculate)
 begin
-    case Register_1 is
-        when "00" => temp_output <= Register_0 + Register_2; --addition
-        when "01" => temp_output <= Register_0 - Register_2; --subtraction
-        when "10" => temp_output <= Register_0; --multiplication
-        when "11" => temp_output <= Register_0; --division
-        when others => temp_output <= "0000000000" & Register_1; --do nothing
-    end case;
+    
+    if (Register_1 = "00") then
+        if () then
+            
+        end if;
+    end if;
+    
 end process;
 
 Output <= temp_output;

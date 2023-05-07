@@ -45,13 +45,13 @@ architecture Behavioral of State_Machine is
 Component Register_12bit
     port ( Input: in std_logic_vector (11 downto 0);
            Output: out std_logic_vector (11 downto 0);
-           Load, BTN_Check: in std_logic);
+           Load, BTN_Check, Flag: in std_logic);
 end Component;
 
 Component Register_2bit
     port ( Input: in std_logic_vector (1 downto 0);
            Output: out std_logic_vector (1 downto 0);
-           Load, BTN_Check: in std_logic);
+           Load, BTN_Chec, Flagk: in std_logic);
 end Component;
 
 Component ALU
