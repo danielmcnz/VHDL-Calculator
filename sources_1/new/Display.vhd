@@ -91,7 +91,8 @@ begin
 
 count_to_8: counter port map(CLK => CLK_512HZ, CO => selector);
 
-Dec_BCD: bin_to_bcd port map(reset => RESET, clock => CLK_100MHz, start => CLK_40HZ, bin => Input, bcd => bcd_temp, ready => ready);
+Dec_BCD: bin_to_bcd port map(reset => RESET, clock => CLK_100MHz, start => CLK_512HZ, bin => Input, bcd => bcd_temp, ready => ready);
+--Dec_BCD: bin_to_bcd port map(reset => RESET, clock => CLK_100MHz, start => CLK_40HZ, bin => Input, bcd => bcd_temp, ready => ready);
 
 BCD_7seg_0: BCD_to_7SEG port map(bcd_in => bcd_temp (3 downto 0), leds_out => led_disp_0);
 BCD_7seg_1: BCD_to_7SEG port map(bcd_in => bcd_temp (7 downto 4), leds_out => led_disp_1);
