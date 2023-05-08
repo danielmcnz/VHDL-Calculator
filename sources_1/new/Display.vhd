@@ -34,10 +34,10 @@ use IEEE.numeric_std.ALL;
 
 entity Display is
     Port (
-            Input: in std_logic_vector (11 downto 0);
+            Input: in std_logic_vector (23 downto 0);
             CA: out std_logic_vector (6 downto 0);
             AN: out std_logic_vector (7 downto 0);
-            CLK_40HZ, CLK_512Hz, RESET, CLK_100MHz: in std_logic
+            CLK_40HZ, CLK_512Hz, RESET, CLK_100MHz, Negative_Sign: in std_logic
             );
 end Display;
 
@@ -72,24 +72,24 @@ end Component;
 
 Component Mux
     Port (
+            Negative_Sign: in std_logic;
             Selector : in std_logic_vector (2 downto 0);
-            Input_0, Input_1, Input_2, Input_3, Input_4, Input_5, Input_6, Input_7 : in std_logic_vector (6 downto 0);
+            Input_0, Input_1, Input_2, Input_3, Input_4, Input_5, Input_6 : in std_logic_vector (6 downto 0);
             Output : out std_logic_vector (6 downto 0);
             Output_Display : out std_logic_vector (7 downto 0)
             );
 end Component;
 
 signal bcd_temp, able: std_logic_vector (27 downto 0);
-signal led_disp_0, led_disp_1, led_disp_2, led_disp_3, led_disp_4, led_disp_5, led_disp_6, negative : std_logic_vector (6 downto 0);
+signal led_disp_0, led_disp_1, led_disp_2, led_disp_3, led_disp_4, led_disp_5, led_disp_6 : std_logic_vector (6 downto 0);
 signal selector: std_logic_vector (2 downto 0);
-signal extended_input: std_logic_vector (23 downto 0);
 signal start, ready: std_logic;
 
 begin
 
 count_to_8: counter port map(CLK => CLK_512HZ, CO => selector);
 
-Dec_BCD: bin_to_bcd port map(reset => RESET, clock => CLK_100MHz, start => CLK_40HZ, bin => extended_input, bcd => bcd_temp, ready => ready);
+Dec_BCD: bin_to_bcd port map(reset => RESET, clock => CLK_100MHz, start => CLK_40HZ, bin => Input, bcd => bcd_temp, ready => ready);
 
 BCD_7seg_0: BCD_to_7SEG port map(bcd_in => bcd_temp (3 downto 0), leds_out => led_disp_0);
 BCD_7seg_1: BCD_to_7SEG port map(bcd_in => bcd_temp (7 downto 4), leds_out => led_disp_1);
@@ -99,9 +99,8 @@ BCD_7seg_4: BCD_to_7SEG port map(bcd_in => bcd_temp (19 downto 16), leds_out => 
 BCD_7seg_5: BCD_to_7SEG port map(bcd_in => bcd_temp (23 downto 20), leds_out => led_disp_5);
 BCD_7seg_6: BCD_to_7SEG port map(bcd_in => bcd_temp (27 downto 24), leds_out => led_disp_6);
 
-Multiplexer: Mux port map(Selector => selector, Input_0 => led_disp_0, Input_1 => led_disp_1, Input_2 => led_disp_2, Input_3 => led_disp_3, Input_4 => led_disp_4, Input_5 => led_disp_5, Input_6 => led_disp_6, Input_7 => negative, Output => CA, Output_Display => AN);
+Multiplexer: Mux port map(Selector => selector, Input_0 => led_disp_0, Input_1 => led_disp_1, Input_2 => led_disp_2, Input_3 => led_disp_3, Input_4 => led_disp_4, Input_5 => led_disp_5, Input_6 => led_disp_6, Negative_Sign => Negative_Sign, Output => CA, Output_Display => AN);
 
-extended_input <= std_logic_vector(resize(unsigned(Input), extended_input'length));
 --able <= "1001100001110110010101000011";
 
 end Behavioral;

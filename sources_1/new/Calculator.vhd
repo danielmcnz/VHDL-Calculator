@@ -47,7 +47,7 @@ Component my_divider
 end Component;
 
 Component State_Machine
-    port(BTNC, BTNR, CLK_512Hz, CLK_100MHz, CLK_40Hz: in std_logic;
+    port(BTNC, BTNR, CLK_512Hz, CLK_100MHz, CLK_40HZ, Negative_SW: in std_logic;
          LED: out std_logic_vector (15 downto 0);
          SW: in std_logic_vector (11 downto 0);
          CA: out std_logic_vector (6 downto 0);
@@ -70,7 +70,7 @@ begin
 Clock: my_divider port map(Clk_in => CLK100MHZ, Clk_out_1Hz => CLK1HZ, Clk_out_40Hz => CLK_40HZ, Clk_out_512Hz => CLK512HZ);
 BTNC_Debouncer: Debouncing port map(Clk_in => CLK100MHZ, BTN => BTNC, Debounced_Button => btnc_input);
 BTNR_Debouncer: Debouncing port map(Clk_in => CLK100MHZ, BTN => BTNR, Debounced_Button => btnr_input);
-SM: State_Machine port map(BTNC => btnc_input, BTNR => btnr_input, CLK_40HZ => CLK_40HZ, CLK_512Hz => CLK512HZ, CLK_100MHz => CLK100MHZ, LED => LED, SW => SW (11 downto 0), CA => CA, AN => AN);
+SM: State_Machine port map(BTNC => btnc_input, BTNR => btnr_input, CLK_40HZ => CLK_40HZ, CLK_512Hz => CLK512HZ, CLK_100MHz => CLK100MHZ, LED => LED, SW => SW (11 downto 0), CA => CA, AN => AN, Negative_SW => SW(15));
 
 
 end Behavioral;

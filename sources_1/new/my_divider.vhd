@@ -45,11 +45,11 @@ architecture Behavioral of my_divider is
 --	constant clk_limit : std_logic_vector(27 downto 0) := X"17D783F"; -- 2 Hz output
     constant clk_limit_1 : std_logic_vector(27 downto 0) := X"2FAF080"; -- 1 Hz   "
     constant clk_limit_2 : std_logic_vector(23 downto 0) := X"2625A0";   -- 40 Hz   "
-    constant clk_limit_3 : std_logic_vector(19 downto 0) := X"17D78";   -- 512 Hz   "
+    constant clk_limit_3 : std_logic_vector(15 downto 0) := X"BEBC";   -- 2048 Hz   "
 
 	signal clk_ctr_1 : std_logic_vector(27 downto 0);
 	signal clk_ctr_2 : std_logic_vector(23 downto 0);
-	signal clk_ctr_3 : std_logic_vector(19 downto 0);
+	signal clk_ctr_3 : std_logic_vector(15 downto 0);
 	signal temp_clk_1, temp_clk_2, temp_clk_3 : std_logic;
 
 begin
@@ -88,9 +88,9 @@ begin
 		if Clk_in = '1' and Clk_in'Event then
 		  if clk_ctr_3 = clk_limit_3 then				-- if counter == (1Hz count)/2
 		  	 temp_clk_3 <= not temp_clk_3;				--  toggle clock
-			 clk_ctr_3 <= X"00000";					--  reset counter
+			 clk_ctr_3 <= X"0000";					--  reset counter
 		  else											-- else
-		  	 clk_ctr_3 <= clk_ctr_3 + X"00001";	--  counter = counter + 1
+		  	 clk_ctr_3 <= clk_ctr_3 + X"0001";	--  counter = counter + 1
 		  end if;
 		end if;
 

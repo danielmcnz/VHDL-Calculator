@@ -35,14 +35,14 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity Twos_Complement is
     Port (
-            Input: in std_logic_vector (11 downto 0);
-            Output: out std_logic_vector (11 downto 0)
+            Input: in std_logic_vector (23 downto 0);
+            Output: out std_logic_vector (23 downto 0)
             );
 end Twos_Complement;
 
 architecture Behavioral of Twos_Complement is
 
-signal holding_val: std_logic_vector (11 downto 0);
+signal holding_val: std_logic_vector (23 downto 0);
 
 begin
 
