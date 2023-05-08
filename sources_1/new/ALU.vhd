@@ -38,7 +38,7 @@ entity ALU is
           Register_1: in std_logic_vector (1 downto 0);
           Output: out std_logic_vector (23 downto 0);
           Calculate, Sign_Reg_0, Sign_Reg_2: in std_logic;
-          Sign_output: out std_logic);
+          Sign_output, Overflow_Flag: out std_logic);
 end ALU;
 
 architecture Behavioral of ALU is
@@ -65,6 +65,7 @@ reg_2 <= std_logic_vector(resize(unsigned(Register_2), reg_0'length));
 process (Calculate)
 begin
     Sign_output <= '0'; --assume positive output unless otherwise stated
+    Overflow_Flag <= '0';
     if (Register_1 = "00") then --ADDITION
         if (((Sign_Reg_0 = '1') and (Sign_Reg_2 = '1')) or ((not (Sign_Reg_0 = '1')) and (not (Sign_Reg_2 = '1')))) then
             Output <= (reg_0 + reg_2);
@@ -127,6 +128,7 @@ begin
         Output <= (Register_0 * Register_2);
         if ((Register_0 * Register_2) > "100110111000001000101111") then --9,999,999
             Output <= "000000000000000000000000";
+            Overflow_Flag <= '1';
         elsif ((Sign_Reg_0 = '1') xor (Sign_Reg_2 = '1')) then
             Sign_output <= '1';
         end if;
@@ -138,6 +140,7 @@ begin
         Output <= (Register_0 * Register_0);
         if ((Register_0 * Register_0) > "100110111000001000101111") then --9,999,999
             Output <= "000000000000000000000000";
+            Overflow_Flag <= '1';
         end if;
     end if;
 end process;

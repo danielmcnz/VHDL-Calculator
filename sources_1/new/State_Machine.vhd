@@ -61,7 +61,7 @@ Component ALU
             Register_1: in std_logic_vector (1 downto 0);
             Output: out std_logic_vector (23 downto 0);
             Calculate, Sign_Reg_0, Sign_Reg_2: in std_logic;
-            Sign_output: out std_logic 
+            Sign_output, Overflow_Flag: out std_logic
             );
 end Component;
 
@@ -70,12 +70,13 @@ Component Display
             Input: in std_logic_vector (23 downto 0);
             CA: out std_logic_vector (6 downto 0);
             AN: out std_logic_vector (7 downto 0);
-            CLK_40HZ, CLK_512Hz, RESET, CLK_100MHz, Negative_Sign: in std_logic
+            State, Opcode: in std_logic_vector (1 downto 0);
+            CLK_40HZ, CLK_512Hz, RESET, CLK_100MHz, Negative_Sign, Overflow_Flag: in std_logic
             );
 end Component;
 
 signal state: std_logic_vector (1 downto 0) := "00";
-signal Load_0, Load_1, Load_2, Load_3, reset, Sign_Reg_0, Sign_Reg_2, sign_output, negative_sign: std_logic;
+signal Load_0, Load_1, Load_2, Load_3, reset, Sign_Reg_0, Sign_Reg_2, sign_output, negative_sign, overflow_flag: std_logic;
 signal reg_0, reg_2: std_logic_vector (11 downto 0);
 signal result, display_val: std_logic_vector (23 downto 0);
 signal reg_1: std_logic_vector (1 downto 0);
@@ -86,9 +87,9 @@ Regi_0: Register_12bit port map(Input => SW, Output => reg_0, Load => Load_0, BT
 Regi_1: Register_2bit port map(Input => SW (1 downto 0), Output => reg_1, Load => Load_1, BTN_Check => BTNC);
 Regi_2: Register_12bit port map(Input => SW, Output => reg_2, Load => Load_2, BTN_Check => BTNC, Flag_in => Negative_SW, Flag_out => Sign_Reg_2);
 
-ALU_0: ALU port map(Register_0 => reg_0, Register_1 => reg_1, Register_2 => reg_2, Output => result, Calculate => Load_3, Sign_Reg_0 => Sign_Reg_0, Sign_Reg_2 => Sign_Reg_2, Sign_output => sign_output);
+ALU_0: ALU port map(Register_0 => reg_0, Register_1 => reg_1, Register_2 => reg_2, Output => result, Calculate => Load_3, Sign_Reg_0 => Sign_Reg_0, Sign_Reg_2 => Sign_Reg_2, Sign_output => sign_output, Overflow_Flag => overflow_flag);
 
-Disp: Display port map(Input => display_val, Negative_Sign => negative_sign, CA => CA, AN => AN, CLK_40HZ => CLK_40HZ, CLK_512Hz => CLK_512Hz, RESET => reset, CLK_100MHz => CLK_100MHz);
+Disp: Display port map(Input => display_val, Negative_Sign => negative_sign, CA => CA, AN => AN, CLK_40HZ => CLK_40HZ, CLK_512Hz => CLK_512Hz, RESET => reset, CLK_100MHz => CLK_100MHz, Overflow_Flag => overflow_flag, State => state, Opcode => SW (1 downto 0));
 
 my_seg_proc: process (BTNR)
 begin
@@ -118,7 +119,7 @@ begin
             Load_3 <= '0';
         elsif state = "01" then
             LED <= "0000000000000011";
-            display_val <= "0000000000000000000000" & SW (1 downto 0);
+            display_val <= "000000000000000000000000";
             negative_sign <= '0';
             Load_0 <= '0';
             Load_1 <= '1';

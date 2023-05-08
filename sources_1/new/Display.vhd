@@ -37,7 +37,8 @@ entity Display is
             Input: in std_logic_vector (23 downto 0);
             CA: out std_logic_vector (6 downto 0);
             AN: out std_logic_vector (7 downto 0);
-            CLK_40HZ, CLK_512Hz, RESET, CLK_100MHz, Negative_Sign: in std_logic
+            State, Opcode: in std_logic_vector (1 downto 0);
+            CLK_40HZ, CLK_512Hz, RESET, CLK_100MHz, Negative_Sign, Overflow_Flag: in std_logic
             );
 end Display;
 
@@ -72,8 +73,9 @@ end Component;
 
 Component Mux
     Port (
-            Negative_Sign: in std_logic;
+            Negative_Sign, Overflow_Flag: in std_logic;
             Selector : in std_logic_vector (2 downto 0);
+            State, Opcode: in std_logic_vector (1 downto 0);
             Input_0, Input_1, Input_2, Input_3, Input_4, Input_5, Input_6 : in std_logic_vector (6 downto 0);
             Output : out std_logic_vector (6 downto 0);
             Output_Display : out std_logic_vector (7 downto 0)
@@ -99,7 +101,7 @@ BCD_7seg_4: BCD_to_7SEG port map(bcd_in => bcd_temp (19 downto 16), leds_out => 
 BCD_7seg_5: BCD_to_7SEG port map(bcd_in => bcd_temp (23 downto 20), leds_out => led_disp_5);
 BCD_7seg_6: BCD_to_7SEG port map(bcd_in => bcd_temp (27 downto 24), leds_out => led_disp_6);
 
-Multiplexer: Mux port map(Selector => selector, Input_0 => led_disp_0, Input_1 => led_disp_1, Input_2 => led_disp_2, Input_3 => led_disp_3, Input_4 => led_disp_4, Input_5 => led_disp_5, Input_6 => led_disp_6, Negative_Sign => Negative_Sign, Output => CA, Output_Display => AN);
+Multiplexer: Mux port map(Selector => selector, Input_0 => led_disp_0, Input_1 => led_disp_1, Input_2 => led_disp_2, Input_3 => led_disp_3, Input_4 => led_disp_4, Input_5 => led_disp_5, Input_6 => led_disp_6, Negative_Sign => Negative_Sign, Output => CA, Output_Display => AN, Overflow_Flag => Overflow_Flag, State => State, Opcode => Opcode);
 
 --able <= "1001100001110110010101000011";
 
