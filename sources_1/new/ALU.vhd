@@ -71,6 +71,9 @@ begin
             if (Sign_Reg_0 = '1') then
                 Sign_output <= '1';
             end if;
+            if ((reg_0 = "000000000000000000000000") and (reg_2 = "000000000000000000000000")) then
+                Sign_output <= '0';
+            end if;
         elsif (reg_0 = reg_2) then
                 Output <= "000000000000000000000000";
         elsif ((Sign_Reg_0 = '1') xor (Sign_Reg_2 = '1')) then
@@ -99,6 +102,9 @@ begin
             if (Sign_Reg_0 = '1') then
                 Sign_output <= '1';
             end if;
+            if ((reg_0 = "000000000000000000000000") and (reg_2 = "000000000000000000000000")) then
+                Sign_output <= '0';
+            end if;
         elsif (not ((Sign_Reg_0 = '1') and (Sign_Reg_2 = '1'))) then
             temp_output <= (reg_0 + reg_2_invert);
             Output <= temp_output;
@@ -119,11 +125,13 @@ begin
         
     elsif (Register_1 = "10") then --MULTIPLICATION
         Output <= (Register_0 * Register_2);
-        if ((Sign_Reg_0 = '1') xor (Sign_Reg_2 = '1')) then
-            Sign_output <= '1';
-        end if;
         if ((Register_0 * Register_2) > "100110111000001000101111") then --9,999,999
             Output <= "000000000000000000000000";
+        elsif ((Sign_Reg_0 = '1') xor (Sign_Reg_2 = '1')) then
+            Sign_output <= '1';
+        end if;
+        if (((Register_0 * Register_2) = "000000000000000000000000") or ((Register_0 * Register_2) > "100110111000001000101111")) then
+            Sign_output <= '0';
         end if;
         
     elsif (Register_1 = "11") then --SQUARED
