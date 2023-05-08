@@ -32,7 +32,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity State_Machine is
-    port(BTNC, BTNR, CLK_512Hz, CLK_100MHz, CLK_40HZ, Negative_SW: in std_logic;
+    port(BTNC, BTNR, CLK_512Hz, CLK_100MHz, CLK_40HZ, Negative_SW, Reg_View: in std_logic;
          LED: out std_logic_vector (15 downto 0);
          SW: in std_logic_vector (11 downto 0);
          CA: out std_logic_vector (6 downto 0);
@@ -75,7 +75,7 @@ Component Display
             );
 end Component;
 
-signal state: std_logic_vector (1 downto 0) := "00";
+signal state, opcode: std_logic_vector (1 downto 0) := "00";
 signal Load_0, Load_1, Load_2, Load_3, reset, Sign_Reg_0, Sign_Reg_2, sign_output, negative_sign, overflow_flag: std_logic;
 signal reg_0, reg_2: std_logic_vector (11 downto 0);
 signal result, display_val: std_logic_vector (23 downto 0);
@@ -89,7 +89,7 @@ Regi_2: Register_12bit port map(Input => SW, Output => reg_2, Load => Load_2, BT
 
 ALU_0: ALU port map(Register_0 => reg_0, Register_1 => reg_1, Register_2 => reg_2, Output => result, Calculate => Load_3, Sign_Reg_0 => Sign_Reg_0, Sign_Reg_2 => Sign_Reg_2, Sign_output => sign_output, Overflow_Flag => overflow_flag);
 
-Disp: Display port map(Input => display_val, Negative_Sign => negative_sign, CA => CA, AN => AN, CLK_40HZ => CLK_40HZ, CLK_512Hz => CLK_512Hz, RESET => reset, CLK_100MHz => CLK_100MHz, Overflow_Flag => overflow_flag, State => state, Opcode => SW (1 downto 0));
+Disp: Display port map(Input => display_val, Negative_Sign => negative_sign, CA => CA, AN => AN, CLK_40HZ => CLK_40HZ, CLK_512Hz => CLK_512Hz, RESET => reset, CLK_100MHz => CLK_100MHz, Overflow_Flag => overflow_flag, State => state, Opcode => opcode);
 
 my_seg_proc: process (BTNR)
 begin
@@ -111,15 +111,28 @@ process (state)
 begin
     if (state = "00") then
             LED <= "0000111111111111";
-            display_val <= "000000000000" & SW;
-            negative_sign <= Negative_SW;
+            
+            if Reg_View = '0' then
+                display_val <= "000000000000" & SW;
+                negative_sign <= Negative_SW;  
+            else
+                display_val <= "000000000000" & reg_0;
+                negative_sign <= Sign_Reg_0;  
+            end if;
+            
             Load_0 <= '1';
             Load_1 <= '0';
             Load_2 <= '0';
             Load_3 <= '0';
         elsif state = "01" then
             LED <= "0000000000000011";
-            display_val <= "000000000000000000000000";
+            
+            if Reg_View = '0' then
+                opcode <= SW (1 downto 0);
+            else
+                opcode <= reg_1;
+            end if;
+            
             negative_sign <= '0';
             Load_0 <= '0';
             Load_1 <= '1';
@@ -127,8 +140,15 @@ begin
             Load_3 <= '0';
         elsif state = "10" then
             LED <= "1000111111111111";
-            display_val <= "000000000000" & SW;
-            negative_sign <= Negative_SW;
+            
+            if Reg_View = '0' then
+                display_val <= "000000000000" & SW;
+                negative_sign <= Negative_SW; 
+            else
+                display_val <= "000000000000" & reg_2;
+                negative_sign <= Sign_Reg_2;  
+            end if;
+            
             Load_0 <= '0';
             Load_1 <= '0';
             Load_2 <= '1';
