@@ -1,21 +1,9 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 03.05.2023 15:43:27
--- Design Name: 
--- Module Name: ALU - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
+--Module Name:
+--Arithmetic Logic Unit (Behavioral)
+--
+--Written by:
+--Freddie Pankhurst, Daniel Mcgregor, Jono Braithwaite
 ----------------------------------------------------------------------------------
 
 
@@ -24,14 +12,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.std_logic_unsigned.ALL;
 use IEEE.numeric_std.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity ALU is
     Port (Register_0, Register_2: in std_logic_vector (11 downto 0);

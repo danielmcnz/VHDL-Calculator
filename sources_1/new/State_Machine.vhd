@@ -1,35 +1,15 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 02.05.2023 12:00:28
--- Design Name: 
--- Module Name: State_Machine - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
+--Module Name:
+--State Machine (Behavioral)
+--
+--Written by:
+--Freddie Pankhurst, Daniel Mcgregor, Jono Braithwaite
 ----------------------------------------------------------------------------------
 
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity State_Machine is
     port(BTNC, BTNR, CLK_512Hz, CLK_100MHz, CLK_40HZ, Negative_SW, Reg_View: in std_logic;
