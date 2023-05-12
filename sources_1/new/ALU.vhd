@@ -59,31 +59,31 @@ begin
 
     -- addition logic
     if (Register_1 = "00") then
-        if (((Sign_Reg_0 = '1') and (Sign_Reg_2 = '1')) or ((not (Sign_Reg_0 = '1')) and (not (Sign_Reg_2 = '1')))) then
+        if (((Sign_Reg_0 = '1') and (Sign_Reg_2 = '1')) or ((not (Sign_Reg_0 = '1')) and (not (Sign_Reg_2 = '1')))) then --check if value signs are equal
             Output <= (reg_0 + reg_2);
-            if (Sign_Reg_0 = '1') then
+            if (Sign_Reg_0 = '1') then --if negative input, make output negative
                 Sign_output <= '1';
             end if;
-            if ((reg_0 = "000000000000000000000000") and (reg_2 = "000000000000000000000000")) then
+            if ((reg_0 = "000000000000000000000000") and (reg_2 = "000000000000000000000000")) then --if both values are zero, make result zero
                 Sign_output <= '0';
             end if;
-        elsif (reg_0 = reg_2) then
+        elsif (reg_0 = reg_2) then --for the case of values being oppositely signed, make output zero
                 Output <= "000000000000000000000000";
-        elsif ((Sign_Reg_0 = '1') xor (Sign_Reg_2 = '1')) then
-            if (not (Sign_Reg_0 = '1')) then
-                if (reg_0 > reg_2) then
+        elsif ((Sign_Reg_0 = '1') xor (Sign_Reg_2 = '1')) then --check if value signs are opposite
+            if (not (Sign_Reg_0 = '1')) then --check if first value is positive
+                if (reg_0 > reg_2) then --if first value is greater, invert second value
                     Output <= (reg_0 + reg_2_invert);
-                elsif (reg_0 < reg_2) then
+                elsif (reg_0 < reg_2) then --if second value is greater, invert second value and invert the sum of the values
                     temp_output <= (reg_0 + reg_2_invert);
                     Output <= temp_output_invert;
                     Sign_output <= '1';
                 end if;
-            elsif (Sign_Reg_0 = '1') then
-                if (reg_0 > reg_2) then
+            elsif (Sign_Reg_0 = '1') then --check if first value is negative
+                if (reg_0 > reg_2) then --if first value is greater, invert first value and invert the sum of the values
                     temp_output <= (reg_0_invert + reg_2);
                     Output <= temp_output_invert;
                     Sign_output <= '1';
-                elsif (reg_0 < reg_2) then
+                elsif (reg_0 < reg_2) then --if second value is greater, invert the first value
                     Output <= (reg_0_invert + reg_2);
                 end if;
             end if;
@@ -91,49 +91,49 @@ begin
         
     -- subtraction logic
     elsif (Register_1 = "01") then
-        if ((Sign_Reg_0 = '1') xor (Sign_Reg_2 = '1')) then
+        if ((Sign_Reg_0 = '1') xor (Sign_Reg_2 = '1')) then --check if value signs are opposite
             Output <= (reg_0 + reg_2);
-            if (Sign_Reg_0 = '1') then
+            if (Sign_Reg_0 = '1') then --check if first value is negative
                 Sign_output <= '1';
             end if;
-            if ((reg_0 = "000000000000000000000000") and (reg_2 = "000000000000000000000000")) then
+            if ((reg_0 = "000000000000000000000000") and (reg_2 = "000000000000000000000000")) then --if both values are zero, make result zero
                 Sign_output <= '0';
             end if;
-        elsif (not ((Sign_Reg_0 = '1') and (Sign_Reg_2 = '1'))) then
+        elsif (not ((Sign_Reg_0 = '1') and (Sign_Reg_2 = '1'))) then --if value signs are both positive, invert second value 
             temp_output <= (reg_0 + reg_2_invert);
             Output <= temp_output;
-            if (reg_0 < reg_2) then
+            if (reg_0 < reg_2) then --if first value greater, invert the temporary sum (with an inverted second value)
                 Output <= temp_output_invert;
                 Sign_output <= '1';
             end if;
-        elsif ((Sign_Reg_0 = '1') and (Sign_Reg_2 = '1')) then
+        elsif ((Sign_Reg_0 = '1') and (Sign_Reg_2 = '1')) then --if value signs are both negative, invert first value
             temp_output <= (reg_0_invert + reg_2);
             Output <= temp_output;
-            if (reg_0 > reg_2) then
+            if (reg_0 > reg_2) then --if second value greater, invert the temporary sum (with an inverted first value)
                 Output <= temp_output_invert;
                 Sign_output <= '1';
             end if;
-        elsif (((((not (Sign_Reg_0 = '1')) and (not (Sign_Reg_2 = '1')))) or ((Sign_Reg_0 = '1') and (Sign_Reg_2 = '1'))) and (reg_0 = reg_2)) then
+        elsif (((((not (Sign_Reg_0 = '1')) and (not (Sign_Reg_2 = '1')))) or ((Sign_Reg_0 = '1') and (Sign_Reg_2 = '1'))) and (reg_0 = reg_2)) then --check if values are oppositely signed and equal to determine if result should be zero
             Output <= "000000000000000000000000";
         end if;
         
     -- multiplication logic
     elsif (Register_1 = "10") then
         Output <= (Register_0 * Register_2);
-        if ((Register_0 * Register_2) > "100110111000001000101111") then --9,999,999
+        if ((Register_0 * Register_2) > "100110111000001000101111") then --check if result is less than 9,999,999
             Output <= "000000000000000000000000";
             Overflow_Flag <= '1';
-        elsif ((Sign_Reg_0 = '1') xor (Sign_Reg_2 = '1')) then
+        elsif ((Sign_Reg_0 = '1') xor (Sign_Reg_2 = '1')) then --check if values are oppositely signed
             Sign_output <= '1';
         end if;
-        if (((Register_0 * Register_2) = "000000000000000000000000") or ((Register_0 * Register_2) > "100110111000001000101111")) then
+        if (((Register_0 * Register_2) = "000000000000000000000000") or ((Register_0 * Register_2) > "100110111000001000101111")) then --if result is zero or greater than 9,999,999 than make result zero
             Sign_output <= '0';
         end if;
         
     -- squared logic
     elsif (Register_1 = "11") then
         Output <= (Register_0 * Register_0);
-        if ((Register_0 * Register_0) > "100110111000001000101111") then --9,999,999
+        if ((Register_0 * Register_0) > "100110111000001000101111") then --check if result is less than 9,999,999
             Output <= "000000000000000000000000";
             Overflow_Flag <= '1';
         end if;
