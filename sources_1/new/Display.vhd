@@ -18,7 +18,7 @@ entity Display is
             CA: out std_logic_vector (6 downto 0);
             AN: out std_logic_vector (7 downto 0);
             State, Opcode: in std_logic_vector (1 downto 0);
-            CLK_40HZ, CLK_512Hz, RESET, CLK_100MHz, Negative_Sign, Overflow_Flag: in std_logic
+            CLK_15KHz, RESET, CLK_100MHz, Negative_Sign, Overflow_Flag: in std_logic
             );
 end Display;
 
@@ -40,8 +40,8 @@ Component bin_to_bcd
 end Component;
 
 Component BCD_to_7SEG
-		   Port ( bcd_in: in std_logic_vector (3 downto 0);	-- Input BCD vector
-    			leds_out: out std_logic_vector (6 downto 0));		-- Output 7-Seg vector 
+		   Port ( bcd_in: in std_logic_vector (3 downto 0);	  -- Input BCD vector
+    			leds_out: out std_logic_vector (6 downto 0)); -- Output 7-Seg vector 
 end Component;
 
 Component counter
@@ -69,10 +69,9 @@ signal start, ready: std_logic;
 
 begin
 
-count_to_8: counter port map(CLK => CLK_512HZ, CO => selector);
+count_to_8: counter port map(CLK => CLK_15KHz, CO => selector);
 
-Dec_BCD: bin_to_bcd port map(reset => RESET, clock => CLK_100MHz, start => CLK_512HZ, bin => Input, bcd => bcd_temp, ready => ready);
---Dec_BCD: bin_to_bcd port map(reset => RESET, clock => CLK_100MHz, start => CLK_40HZ, bin => Input, bcd => bcd_temp, ready => ready);
+Dec_BCD: bin_to_bcd port map(reset => RESET, clock => CLK_100MHz, start => CLK_15KHz, bin => Input, bcd => bcd_temp, ready => ready);
 
 BCD_7seg_0: BCD_to_7SEG port map(bcd_in => bcd_temp (3 downto 0), leds_out => led_disp_0);
 BCD_7seg_1: BCD_to_7SEG port map(bcd_in => bcd_temp (7 downto 4), leds_out => led_disp_1);
@@ -83,7 +82,5 @@ BCD_7seg_5: BCD_to_7SEG port map(bcd_in => bcd_temp (23 downto 20), leds_out => 
 BCD_7seg_6: BCD_to_7SEG port map(bcd_in => bcd_temp (27 downto 24), leds_out => led_disp_6);
 
 Multiplexer: Mux port map(Selector => selector, Input_0 => led_disp_0, Input_1 => led_disp_1, Input_2 => led_disp_2, Input_3 => led_disp_3, Input_4 => led_disp_4, Input_5 => led_disp_5, Input_6 => led_disp_6, Negative_Sign => Negative_Sign, Output => CA, Output_Display => AN, Overflow_Flag => Overflow_Flag, State => State, Opcode => Opcode);
-
---able <= "1001100001110110010101000011";
 
 end Behavioral;
