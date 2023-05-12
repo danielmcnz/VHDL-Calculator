@@ -13,8 +13,10 @@ use IEEE.std_logic_signed.all;
 
 
 entity counter is
-    Port (CLK : in std_logic;                       -- 15KHz Clock Input
-          CO : out std_logic_vector (2 downto 0));  -- 3-Bit Counter Output
+    Port (
+            CLK : in std_logic;                     -- 15KHz Clock Input
+            CO : out std_logic_vector (2 downto 0)  -- 3-Bit Counter Output
+          );  
 end counter;
 
 architecture Behavioral of counter is

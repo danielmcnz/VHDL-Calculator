@@ -31,10 +31,10 @@ architecture Behavioral of ALU is
 
 -- import twos-complement module
 component Twos_Complement
-    Port (
-            Input: in std_logic_vector (23 downto 0);
-            Output: out std_logic_vector (23 downto 0)
-            );
+    port (
+            Input: in std_logic_vector (23 downto 0);   -- 24-Bit Vector Input To be Inverted
+            Output: out std_logic_vector (23 downto 0)  -- Inverted 24-Bit Output
+          );
 end component;
 
 signal reg_0, reg_2, reg_0_invert, reg_2_invert, temp_output_invert, temp_output: std_logic_vector (23 downto 0);

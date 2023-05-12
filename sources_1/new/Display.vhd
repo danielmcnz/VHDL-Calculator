@@ -40,26 +40,28 @@ Component bin_to_bcd
 end Component;
 
 Component BCD_to_7SEG
-		   Port ( bcd_in: in std_logic_vector (3 downto 0);	  -- Input BCD vector
-    			leds_out: out std_logic_vector (6 downto 0)); -- Output 7-Seg vector 
+    port (
+            bcd_in: in std_logic_vector (3 downto 0);	  -- Input BCD vector
+            leds_out: out std_logic_vector (6 downto 0)   -- Output 7-Seg vector 
+          ); 
 end Component;
 
 Component counter
-    Port (
-            CLK : in std_logic;
-            CO : out std_logic_vector (2 downto 0)
-            );
+    port (
+            CLK : in std_logic;                     -- 15KHz Clock Input
+            CO : out std_logic_vector (2 downto 0)  -- 3-Bit Counter Output
+          ); 
 end Component;
 
 Component Mux
-    Port (
+    port (
             Negative_Sign, Overflow_Flag: in std_logic;                                                         -- negative and overflown sign flags for the outputted number on the 7 segment displays
             Selector : in std_logic_vector (2 downto 0);                                                        -- determines which 7 segment display is active at any given time
             State, Opcode: in std_logic_vector (1 downto 0);                                                    -- current state from the state machine and the inputted op code for the current calculation
             Input_0, Input_1, Input_2, Input_3, Input_4, Input_5, Input_6 : in std_logic_vector (6 downto 0);   -- multiplexer inputs for the 7 segment display segments
             Output : out std_logic_vector (6 downto 0);                                                         -- output of the mux
             Output_Display : out std_logic_vector (7 downto 0)                                                  -- values for each segment of any given display 
-            );
+          );
 end Component;
 
 -- signals for the display

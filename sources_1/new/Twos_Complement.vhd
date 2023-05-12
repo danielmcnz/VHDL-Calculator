@@ -14,7 +14,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 
 entity Twos_Complement is
-    Port (
+    port (
             Input: in std_logic_vector (23 downto 0);   -- 24-Bit Vector Input To be Inverted
             Output: out std_logic_vector (23 downto 0)  -- Inverted 24-Bit Output
           );
