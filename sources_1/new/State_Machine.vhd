@@ -94,57 +94,57 @@ end process my_seg_proc;
 process (state) -- When State Change
 begin
     if (state = "00") then  -- First 12-Bit Value Input State
-            LED <= "0000111111111111"; -- Set Current 
+            LED <= "0000111111111111"; -- Set LED's to First 12 Switches
             
-            if Reg_View = '0' then
-                display_val <= "000000000000" & SW;
-                negative_sign <= Negative_SW;  
+            if Reg_View = '0' then                  -- Checks if Register View Switch Enabled
+                display_val <= "000000000000" & SW; -- Sends Current Switch Outputs to Display
+                negative_sign <= Negative_SW;       -- Assigns Current Negative Sign Value
             else
-                display_val <= "000000000000" & reg_0;
-                negative_sign <= Sign_Reg_0;  
+                display_val <= "000000000000" & reg_0;  -- Sends Register Stored Switch Value
+                negative_sign <= Sign_Reg_0;            -- Sends Register Stored Negative Value
             end if;
             
-            Load_0 <= '1';
+            Load_0 <= '1';  -- Load First Register
             Load_1 <= '0';
             Load_2 <= '0';
             Load_3 <= '0';
         elsif state = "01" then
-            LED <= "0000000000000011";
+            LED <= "0000000000000011";  -- Set LED's to First 2 Switches
             
-            if Reg_View = '0' then
-                opcode <= SW (1 downto 0);
+            if Reg_View = '0' then          -- Checks if Register View Switch Enabled
+                opcode <= SW (1 downto 0);  -- Assigns Current Switchs Opcode 
             else
-                opcode <= reg_1;
+                opcode <= reg_1;            -- Assigns Stored Opcode
             end if;
             
             negative_sign <= '0';
             Load_0 <= '0';
-            Load_1 <= '1';
+            Load_1 <= '1';  -- Load Second Register
             Load_2 <= '0';
             Load_3 <= '0';
         elsif state = "10" then
-            LED <= "1000111111111111";
+            LED <= "1000111111111111";  -- Set LED's to First 12 Switches and Left Most Switch
             
-            if Reg_View = '0' then
-                display_val <= "000000000000" & SW;
-                negative_sign <= Negative_SW; 
+            if Reg_View = '0' then                  -- Checks if Register View Switch Enabled
+                display_val <= "000000000000" & SW; -- Sends Current Switch Outputs to Display
+                negative_sign <= Negative_SW;       -- Assigns Current Negative Sign Value
             else
-                display_val <= "000000000000" & reg_2;
-                negative_sign <= Sign_Reg_2;  
+                display_val <= "000000000000" & reg_2;  -- Sends Register Stored Switch Value
+                negative_sign <= Sign_Reg_2;            -- Sends Register Stored Negative Value
             end if;
             
             Load_0 <= '0';
             Load_1 <= '0';
-            Load_2 <= '1';
+            Load_2 <= '1';  -- Load Third Register
             Load_3 <= '0';
         elsif state = "11" then
-            LED <= "0000000000000000";
-            display_val <= result;
-            negative_sign <= sign_output;
+            LED <= "0000000000000000";  -- Turn Off LED's
+            display_val <= result;      -- Display Calculated Result
+            negative_sign <= sign_output;   -- Display Calucalted Sign Value
             Load_0 <= '0';
             Load_1 <= '0';
             Load_2 <= '0';
-            Load_3 <= '1';    
+            Load_3 <= '1';  -- Trigger Calculation
         end if;
 end process;
 

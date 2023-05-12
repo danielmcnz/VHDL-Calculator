@@ -13,26 +13,25 @@ use IEEE.std_logic_signed.all;
 
 
 entity counter is
-    Port (CLK : in std_logic;
-          CO : out std_logic_vector (2 downto 0));
+    Port (CLK : in std_logic;                       -- 15KHz Clock Input
+          CO : out std_logic_vector (2 downto 0));  -- 3-Bit Counter Output
 end counter;
 
 architecture Behavioral of counter is
 
-signal count : std_logic_vector (2 downto 0);
-signal count_out : std_logic;
+signal count : std_logic_vector (2 downto 0);   -- Current Temp Count for Inside the Process
 
 begin
-    process (CLK) is
+    process (CLK)   -- When Change in Clock
     begin
-        if (CLK'event and CLK = '1') then
-            if (count = "111") then
-                count <= "000";
+        if (CLK'event and CLK = '1') then   -- Clock Rising Edge
+            if (count = "111") then         -- If Max 3-Bit Binary Value
+                count <= "000";             -- Reset Back to "000"
                 
             else
-                count <= count + 1;
+                count <= count + 1;         -- Adds 1 to the Current Count
             end if;
         end if;
     end process;
-    CO <= count;
+    CO <= count;    -- Assign Temp Count to the Output Count
 end Behavioral;
